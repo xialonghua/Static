@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>Design Studio</title>
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+    <!-- 可选的Bootstrap主题文件（一般不用引入） -->
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <script src="http://cdn.bootcss.com/masonry/4.1.0/masonry.pkgd.min.js"></script>
+    <script src="http://cdn.bootcss.com/jquery.imagesloaded/4.1.0/imagesloaded.pkgd.min.js"></script>
+
+    <style type="text/css">
+        body {
+            padding-top: 60px;
+            width: 100%;
+            height: auto;
+            background-color: rebeccapurple;
+        }
+        img {
+            width: 100%;
+            height: auto;
+        }
+
+    </style>
+
+    <style type="text/css">
+    </style>
+
+    <script type="text/javascript">
+
+        $(function() {
+
+            var masonryNode = $('#masonry');
+            masonryNode.imagesLoaded(function(){
+                masonryNode.masonry({
+                    itemSelector: '.thumbnail',
+                    isFitWidth: true
+                });
+            });
+
+
+        });
+    </script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+<!-- Fixed navbar -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Design Studio</a>
+        </div>
+        <div id="navbar">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Home</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+
+<div class="row">
+    <div id="masonry" class="col-lg-8" style="background-color: black; float: left">
+        <div class="thumbnail" style="float: left">
+            <img class="img-responsive"
+                 src="http://images.cnitblog.com/blog/48817/201308/05081755-0fc1d789617a4a2ea6fc7a26cbaac167.png">
+
+            <div class="caption">
+                <div class="title">简单OA管理系统</div>
+                <div class="content">
+                    hhh
+                </div>
+                <div class="author">
+                    by <a target="_blank" href="http://fineui.com/bbs/home.php?mod=space&uid=2426">小小生</a>
+                </div>
+            </div>
+        </div>
+        <div class="thumbnail" style="float: left">
+            <img class="img-responsive"
+                 src="http://images.cnitblog.com/blog/48817/201308/05081755-0fc1d789617a4a2ea6fc7a26cbaac167.png">
+
+            <div class="caption">
+                <div class="title">简单OA管理系统</div>
+                <div class="content">
+                    hhh
+                </div>
+                <div class="author">
+                    by <a target="_blank" href="http://fineui.com/bbs/home.php?mod=space&uid=2426">小小生</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="masonry2" class="col-lg-4" style="background-color: yellow; overflow:hidden;">
+        ss
+    </div>
+</div>
+
+
+<div class="container-fluid" role="main" style="float: inherit">
+dd
+</div>
+
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <title>统计</title>
+
+    <style type="text/css">
+        table.statics {
+            font-family: verdana, arial, sans-serif;
+            font-size: 11px;
+            color: #333333;
+            border-width: 1px;
+            border-color: #666666;
+            border-collapse: collapse;
+        }
+
+        table.statics th {
+            border-width: 1px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #dedede;
+        }
+
+        table.statics td {
+            border-width: 1px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #ffffff;
+        }
+    </style>
+    <link href="http://cdn.bootcss.com/jqueryui/1.12.0-rc.2/jquery-ui.min.css" rel="stylesheet">
+    <link href="http://cdn.bootcss.com/jqueryui/1.12.0-rc.2/jquery-ui.structure.min.css" rel="stylesheet">
+    <link href="http://cdn.bootcss.com/jqueryui/1.12.0-rc.2/jquery-ui.theme.min.css" rel="stylesheet">
+
+
+    <script src="http://cdn.bootcss.com/json2/20150503/json2.min.js"></script>
+    <script src="http://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
+    <script src="http://cdn.bootcss.com/jqueryui/1.12.0-rc.2/jquery-ui.min.js"></script>
+
+    <script type="text/javascript">
+
+
+        var limit = {{.Limit}};
+        // var limit = "1";
+        var fuc = {{.Func}};
+        var url = {{.Url}};
+        var channel = {{.Channel}};
+
+        var clientType = {"websocket": "0", "polling": "0"};
+        function getQueryString(name) {
+            var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) {
+                return unescape(r[2]);
+            }
+            return null;
+        }
+        var isQuery = false;
+        function queryMem() {
+            if (isQuery) {
+                return;
+            }
+            isQuery = true;
+            try{
+                var channel = $('#channel').val();
+                var url = $('#url').val();
+                $.ajax({
+                    type: "post",
+                    url: "http://" + url + "/" + $('#fuc').val(),
+                    data: "limit=" + $('#limit').val() + "&channel=" + channel,
+                    headers: {"content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+                    async: true,
+                    success: function (data) {
+                        var json = "";
+                        try {
+                            json = JSON.parse(data);
+                            clientType = json;
+                        } catch (e) {
+                            isQuery = false;
+                            return;
+                        }
+
+                        $("#statics  tr:not(:first)").empty();
+                        // var json = JSON.parse(data);
+                        var list = json.list;
+                        for (var i = 0; i < list.length; i++) {
+                            var ac = list[i].account;
+                            var nick = list[i].nick;
+                            var loginTime = list[i].time;
+                            var loginDuration = list[i].stay;
+                            var packageCount = list[i].package;
+                            var packageRate = list[i].aver;
+                            var channel = list[i].channel;
+
+                            var a = "'" + ac + "'";
+                            var c = "'" + channel + "'";
+                            var f = "javascript:alertInfo(" + a + "," +  c + ");"
+                            var td = "<tr><td><a href=" + f + ">" + ac + "</a></td><td>" + nick + "</td><td>" + channel + "</td><td>" + loginTime + "</td><td>" + loginDuration + "s</td><td>" + packageCount + "</td><td>" + packageRate + "</td></tr>";
+                            $("#statics").append(td);
+                        }
+                        isQuery = false;
+
+                    },
+                    failure: function () {
+                        isQuery = false;
+                    }
+                });
+            }catch (e){
+                isQuery = false;
+            }
+
+
+        }
+
+        function alertInfo(ac, channel){
+            try{
+                $.ajax({
+                    type: "post",
+                    url: "http://" + $('#url').val() + "/StaticUserDetail",
+                    data: "account=" + ac + "&channel=" + channel,
+                    async: true,
+                    headers: {"content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+                    success: function (data) {
+                        var json = "";
+                        try {
+                            json = JSON.parse(data);
+                        } catch (e) {
+                            alert("获取失败");
+                            return;
+                        }
+                        $( "#dialog" ).dialog({
+                            width:600,
+                            modal: true
+                        });
+
+                        $("#detail  tr:not(:first)").empty();
+                        // var json = JSON.parse(data);
+                        var role = json.Role;
+                        var method = json.CurrentName;
+                        var userAgent = json.UserAgent;
+                        var ip = json.IP;
+                        var td = "<tr><td>" + role + "</td><td>" + method + "</td><td>" + userAgent + "</td><td>" + ip + "</td></tr>";
+                        $("#detail").append(td);
+                    },
+                    failure: function () {
+                        alert("获取失败");
+                    }
+                });
+            }catch (e){
+                alert("获取失败");
+            }
+
+        }
+
+        function queryCount() {
+            try{
+                $.ajax({
+                    type: "post",
+                    url: "http://" + $('#url').val() + "/GetUserCount",
+                    data: "",
+                    async: true,
+                    headers: {"content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+                    success: function (data) {
+                        var json = "";
+                        try {
+                            json = JSON.parse(data);
+                        } catch (e) {
+                            setTimeout("queryCount('" + $('#url').val() + "')", 1000);
+                            return;
+                        }
+                        $("#count  tr:not(:first)").empty();
+                        // var json = JSON.parse(data);
+
+                        var chat = json.Chat;
+                        var static = json.static;
+
+                        var td = "<tr><td>聊天服务</td><td>" + chat.user + "</td><td>" + chat.link + "</td><td>" + clientType.websocket + "</td><td>" + clientType.polling + "</td></tr>";
+                        $("#count").append(td);
+                        td = "<tr><td>统计服务</td><td>" + static.user + "</td><td>" + static.link + "</td><td>" + clientType.websocket + "</td><td>" + clientType.polling + "</td></tr>";
+                        $("#count").append(td);
+                        setTimeout("queryCount('" + $('#url').val() + "')", 1000);
+                    },
+                    failure: function () {
+                        setTimeout("queryCount('" + $('#url').val() + "')", 1000);
+                    }
+                });
+            }catch (e){
+                setTimeout("queryCount('" + url + "')", 1000);
+            }
+
+
+        }
+        window.onload = function () {
+
+            $("#url").val(url);
+            $("#channel").val(channel);
+            $("#fuc").val(fuc);
+            $("#fuc").val(fuc);
+
+
+            queryCount();
+            queryMem();
+        }
+        // http://192.168.1.52:24438/StaticUserDetail?account=GotyeTestUser_5577006791947779410&channel=4_1420002
+
+    </script>
+
+</head>
+<body>
+<!-- CSS goes in the document HEAD or added to your external stylesheet -->
+
+<table class="statics" id="count">
+    <tr>
+        <th>服务器</th>
+        <th>在线人数</th>
+        <th>连接数</th>
+        <th>websocket</th>
+        <th>polling</th>
+    </tr>
+
+</table>
+
+<input type="text" id="url" placeholder="url"/>
+<input type="text" id="limit" placeholder="limit"/>
+<input type="text" id="channel" placeholder="channel"/>
+<input type="text" id="fuc" placeholder="fuc"/>
+
+<a href="javascript:queryMem();">刷新</a>
+<!-- Table goes in the document BODY -->
+<table class="statics" id="statics">
+    <tr>
+        <th>帐号</th>
+        <th>昵称</th>
+        <th>频道</th>
+        <th>登录时间</th>
+        <th>登录时长</th>
+        <th>发包数</th>
+        <th>发包率</th>
+    </tr>
+
+</table>
+
+<div id="dialog" title="用户详情">
+    <!--// {"FullAccount":""-->
+    <!--// ,"Token":"d3370e65f4431788573c41423e592eff",-->
+    <!--// "Terminal":"",-->
+    <!--// "Force":0,-->
+    <!--// "IsIM":false,-->
+    <!--// "Account":"GotyeTestUser_5577006791947779410",-->
+    <!--// "Nick":"我拉黑",-->
+    <!--// "AppKey":"",-->
+    <!--// "AppId":0,-->
+    <!--// "DevId":0,-->
+    <!--// "ChannelID":1420002,-->
+    <!--// "SioChannelID":"4_1420002",-->
+    <!--// "RoomID":0,-->
+    <!--// "SioRoomID":"",-->
+    <!--// "State":1,-->
+    <!--// "UserType":0,-->
+    <!--// "Role":4,-->
+    <!--// "IMAddress":"",-->
+    <!--// "Name":"static",-->
+    <!--// "LoginTime":1466058830,-->
+    <!--// "LinkTime":1466058830,-->
+    <!--// "LastHeartTime":1466058831,-->
+    <!--// "ClientType":1,-->
+    <!--// "LogoutType":0,-->
+    <!--// "PackageNum":3,-->
+    <!--// "UserAgent":"node-XMLHttpRequest",-->
+    <!--// "IP":"192.168.1.52",-->
+    <!--// "CurrentName":"polling"}-->
+    <table class="statics" id="detail">
+        <tr>
+            <th>角色</th>
+            <th>连接方式</th>
+            <th>UserAgent</th>
+            <th>IP</th>
+        </tr>
+
+    </table>
+</div>
+</body>
+
